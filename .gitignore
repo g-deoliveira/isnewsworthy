@@ -1,11 +1,16 @@
 # exclude the contents of the parsed data dir
-data/parsed/*
+data/parsed/**
 
 # exclude the contents of the Notebooks dir
-noetbooks/*
+noetbooks/**
 
 # exclude the deprecated folder
 deprecated/
+
+# exclude pickle/joblib files
+**pkl
+**pickle
+**joblib
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
