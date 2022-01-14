@@ -1,3 +1,12 @@
+# exclude the contents of the parsed data dir
+data/parsed/*
+
+# exclude the contents of the Notebooks dir
+noetbooks/*
+
+# exclude the deprecated folder
+deprecated/
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
