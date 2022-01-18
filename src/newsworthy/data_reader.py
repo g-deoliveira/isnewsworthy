@@ -3,6 +3,8 @@ from pathlib import Path
 import json
 from collections import Counter
 
+from utils import get_path_to_data_parsed_dir
+
 DATA_BASE_PATH = '../../data/parsed'
 
 
@@ -19,30 +21,32 @@ class DataReader:
         self.verbose = verbose
 
         # generate the absolute path to the data directory
-        script_path = Path(__file__)
-        package_root = Path(script_path, '../../..')
-        assert package_root.resolve().name == 'isnewsworthy'
-        data_path = Path(package_root, 'data/parsed')
-        self.data_path = data_path.resolve()
+        # script_path = Path(__file__)
+        # package_root = Path(script_path, '../../..')
+        # assert package_root.resolve().name == 'isnewsworthy'
+        # data_path = Path(package_root, 'data/parsed')
+        # self.data_path = data_path.resolve()
+
+        self.data_path = get_path_to_data_parsed_dir()
 
         self._prefixes = self._get_file_prefixes()
-    
-    
+
+
     def _get_file_prefixes(self):
-    
+
         prefixes = [f for f in os.listdir(self.data_path)]
         prefixes = set([p[:p.index('.')] for p in prefixes])
 
         print(f'Collected {len(prefixes)} prefixes.')
-        
+
         return sorted(list(prefixes))
-    
+
 
     def _get_record(self, prefix):
 
-        # metadata is a dictionary 
+        # metadata is a dictionary
         metadata = self._read_metadata(prefix)
-        
+
         if metadata.get('error'):
             # these URLs were not properly parsed so we skip these
             raise ValueError('parsing error')
@@ -50,7 +54,7 @@ class DataReader:
         else:
 
             label = metadata.get('label')
-    
+
             raw_features = self._read_raw_features(prefix)
 
             return raw_features, label
@@ -60,7 +64,7 @@ class DataReader:
         '''
         Returns the labeled feature dataset (features, labels) where:
         data: list of dictionaries, where each dictionary corresponds to one feature record
-        target: the corresponding labels 
+        target: the corresponding labels
         '''
 
         labels = []
@@ -68,7 +72,7 @@ class DataReader:
 
         for prefix in self._prefixes:
             if self.verbose: print(prefix)
-            
+
             try:
                 raw_features, label = self._get_record(prefix)
             except ValueError as ve:
@@ -77,7 +81,7 @@ class DataReader:
 
             features.append(raw_features)
             labels.append(label)
-        
+
         assert len(labels) == len(features)
 
         # compute the target distribution for display purposes
@@ -93,13 +97,13 @@ class DataReader:
         The metadata is stored in files '1234.json'
         where 1234 is the prefix.
         '''
-        
+
         file_name = f'{prefix}.json'
         if self.verbose: print(file_name)
 
-        f = Path(self.data_path, file_name)    
+        f = Path(self.data_path, file_name)
         data = json.loads(f.read_text())
-        
+
         return data
 
 
@@ -109,15 +113,15 @@ class DataReader:
         in files with naming convention '1234.raw_features'
         where 1234 is the prefix.
         '''
-        
+
         file_name = f'{prefix}.raw_features'
         if self.verbose: print(file_name)
 
         f = Path(self.data_path, file_name)
         data = json.loads(f.read_text())
-        
+
         return data
-    
+
     def get_record(self, prefix):
         '''
         prefix: int
@@ -136,7 +140,7 @@ class DataReader:
 
 
 if __name__ == '__main__':
-    
+
     dr = DataReader()
     features, labels = dr.get_Xy_data()
 
@@ -148,5 +152,5 @@ if __name__ == '__main__':
             ,indent=2)
     )
 
-    
+
 
