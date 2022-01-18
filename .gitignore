@@ -1,8 +1,8 @@
 # exclude the contents of the parsed data dir
 data/parsed/**
 
-# exclude the contents of the Notebooks dir
-noetbooks/**
+# exclude the contents of the Notebooks WIP dir
+notebooks_wip/**
 
 # exclude the deprecated folder
 deprecated/
